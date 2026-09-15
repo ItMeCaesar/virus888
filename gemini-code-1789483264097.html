@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AegisShield™ | Enterprise Threat & Malware Scanner</title>
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --accent-blue: #38bdf8;
+      --accent-green: #22c55e;
+      --accent-hover: #0284c7;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(34, 197, 94, 0.08) 0px, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Navigation */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: 900;
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--accent-green);
+      background: rgba(34, 197, 94, 0.1);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1000px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    .hero-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2.5rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      margin-bottom: 2rem;
+    }
+
+    .hero-title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    /* Grid Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-item {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 10px;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Controls */
+    .action-area {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), #0284c7);
+      color: #fff;
+      border: none;
+      padding: 0.85rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Console Window */
+    .console-window {
+      background: #04070d;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .console-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .window-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot-red { background-color: #ef4444; }
+    .dot-yellow { background-color: #f59e0b; }
+    .dot-green { background-color: #10b981; }
+
+    .console-title {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-left: 0.5rem;
+      font-family: monospace;
+    }
+
+    .console-body {
+      padding: 1rem;
+      height: 320px;
+      overflow-y: auto;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85rem;
+      color: #38bdf8;
+      word-break: break-all;
+      white-space: pre-wrap;
+      line-height: 1.2;
+    }
+
+    /* Custom Scrollbar */
+    .console-body::-webkit-scrollbar {
+      width: 6px;
+    }
+    .console-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">✓</div>
+      <span>AegisShield™</span>
+    </div>
+    <div class="nav-status">
+      <div class="pulse-dot"></div>
+      Engine v4.19 Active
+    </div>
+  </header>
+
+  <main>
+    <div class="hero-card">
+      <h1 class="hero-title">Real-Time Threat & Virus Analysis</h1>
+      <p class="hero-subtitle">Initiate a deep system memory scan to verify core integrity, check for malicious payload signatures, and analyze potential security vulnerabilities.</p>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">Database Defs</div>
+          <div class="stat-value" id="defDate">Updated Today</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Scanner Mode</div>
+          <div class="stat-value">Deep Heuristic</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Threat Index</div>
+          <div class="stat-value" style="color: var(--accent-green);">0 (Clean)</div>
+        </div>
+      </div>
+
+      <div class="action-area">
+        <button class="btn-primary" id="scanBtn" onclick="startScan()">Start System Check</button>
+        <span class="status-text" id="statusLabel">System ready for inspection.</span>
+      </div>
+
+      <div class="console-window">
+        <div class="console-header">
+          <div class="window-dot dot-red"></div>
+          <div class="window-dot dot-yellow"></div>
+          <div class="window-dot dot-green"></div>
+          <span class="console-title">output.log — live threat analysis stream</span>
+        </div>
+        <div class="console-body" id="consoleOutput">System initialized... Awaiting user scan command.</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 AegisShield CyberSecurity Solutions. All security definitions verified.
+  </footer>
+
+  <script>
+    // Set current date dynamically
+    document.getElementById('defDate').innerText = new Date().toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric'
+    });
+
+    let isScanning = false;
+    const output = document.getElementById('consoleOutput');
+    const scanBtn = document.getElementById('scanBtn');
+    const statusLabel = document.getElementById('statusLabel');
+
+    function startScan() {
+      if (isScanning) return;
+      isScanning = true;
+
+      // Update UI state
+      scanBtn.disabled = true;
+      scanBtn.innerText = "Analyzing System...";
+      statusLabel.innerText = "SCAN IN PROGRESS — RUNNING HEURISTIC CHECK...";
+      statusLabel.style.color = "#38bdf8";
+
+      output.textContent = "Initializing diagnostic sequence...\nAnalyzing memory blocks...\n";
+
+      // Endless streaming generator function using requestAnimationFrame for butter-smooth performance
+      function streamEights() {
+        if (!isScanning) return;
+
+        // Append a block of 888888s
+        const block = "8".repeat(120) + "\n";
+        output.textContent += block;
+
+        // Keep buffer trimmed so the browser never crashes/lags
+        if (output.textContent.length > 40000) {
+          output.textContent = output.textContent.slice(-20000);
+        }
+
+        // Auto-scroll to bottom of the console
+        output.scrollTop = output.scrollHeight;
+
+        // Recursively trigger next frame
+        requestAnimationFrame(streamEights);
+      }
+
+      // Start the stream
+      requestAnimationFrame(streamEights);
+    }
+  </script>
+</body>
+</html>
